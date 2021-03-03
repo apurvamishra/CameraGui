@@ -14,8 +14,19 @@
                 <Setter Property="Padding" Value="5,2"/>
             </Style>
         </Grid.Resources>
-        
-        <Button Click = "Button_Click" Height="30" Width="60" Margin="0,0,276,235" HorizontalAlignment="Right" VerticalAlignment="Bottom">Level (Y)</Button>
-        <Button Click = "Button_Click" Height="30" Width="60" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">Level (X)</Button>
+
+        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" 
+                   GotFocus = "ToggleIndicator"
+                   Canvas.Top="20" Canvas.Left="20" StrokeThickness="3" 
+                   Margin="10,10,10,0" VerticalAlignment="Top" />
+        <TextBlock Text="LED OFF" FontSize="16" Foreground="#FFDEAD" Name="LEDText"
+                   Margin="15,15,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"></TextBlock>
+
+        <Button Click = "YClicked" Height="30" Width="60" 
+                Margin="0,0,0,10" VerticalAlignment="Bottom">
+            Level (Y)</Button>
+        <Button Click = "XClicked" Height="30" Width="60" Margin="0,0,0,45" 
+                HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            Level (X)</Button>
     </Grid>
 </Page>

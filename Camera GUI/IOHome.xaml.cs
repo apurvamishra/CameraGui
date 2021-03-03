@@ -20,6 +20,8 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reflection;
+using System.Threading;
+
 
 
 namespace Camera_GUI
@@ -29,12 +31,37 @@ namespace Camera_GUI
 	/// </summary>
 	public partial class IOHome : Page
 	{
-		// On bootup, create local instance of acclination database
+		public bool newMotorState = false;
 
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{ 
-			// Synchronise local database with PLC database
+		private void XClicked(object sender, RoutedEventArgs e)
+		{
+			LEDColour.Fill = new SolidColorBrush(Color.FromRgb(70, 172, 204));
+		}
+		private void YClicked(object sender, RoutedEventArgs e)
+		{
+			if (newMotorState is false)
+			{
+				LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+			}
+			else
+			{
+				LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+			}
+		}
 
+		public void ToggleIndicator(object sender, RoutedEventArgs e)
+        {
+			Dispatcher.Invoke(() =>
+			{
+				if (newMotorState is false)
+				{
+					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+				}
+				else
+				{
+					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+				}
+			});
 		}
 
 		public IOHome()
@@ -46,20 +73,28 @@ namespace Camera_GUI
 			InitializeComponent();
 		}
 
+		public void ReadFromPLC(ChiefDatabase CB)
+        {
+			// Grab the PLC information
+
+			// Update GUI
+			
+		}
+
 		public void ConnectToPLC()
         {
 			// Connecting to PLC
 			JPLCConnection plc = new JPLCConnection("192.168.1.140", 0, 1);
-			string csvFilepath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OPF.csv";
-			double timeBetweenRetries = 6; // seconds
-			double timeBetweenReads = 5; //seconds
+			double timeBetweenRetries = 0.06; // seconds
+			double timeBetweenReads = 0.05; //seconds
 
 			// Setup program
 			var chiefDB = new ChiefDatabase();
-			var acclinDBNum = 1337;
-
+			var acclinDBNum = 4;
+			plc.Connect();
+			chiefDB.ReadFromDB(plc, acclinDBNum);
 			// FAULT DATA
-			var readFaultDBObservable = Observable.Create<ChiefDatabase>(o =>
+			var readDBObservable = Observable.Create<ChiefDatabase>(o =>
 			{
 				var result = chiefDB.ReadFromDB(plc, acclinDBNum);
 				if (result != 0)
@@ -91,8 +126,10 @@ namespace Camera_GUI
 				return Disposable.Empty;
 			})
 			.Concat(
-				Observable.Interval(TimeSpan.FromSeconds(timeBetweenReads))
-				.Zip(combinedDBObservable, (interval, dbs) => dbs).Repeat()
+				Observable
+				.Interval(TimeSpan.FromSeconds(timeBetweenReads))
+				.Zip(readDBObservable, (interval, dbs) => dbs)
+				.Repeat()
 			);
 
 			var disposable = observable
@@ -100,13 +137,14 @@ namespace Camera_GUI
 				.RetryWhen(errors => errors.SelectMany(Observable.Timer(TimeSpan.FromSeconds(timeBetweenRetries))))
 				.Subscribe(dbs =>
 				{
-					var (chiefDB) = dbs;
+					var chiefdb = dbs;
 					//===============================================================================
 					// THIS SECTION OF CODE WILL REPEAT
 
 					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
-					Console.WriteLine(chiefDB);
-					WriteToBeamsSqlDB(cnn, sql, chiefDB);
+					Console.WriteLine(chiefdb.SetState.Value);
+					newMotorState = chiefdb.SetState.Value;
+					ReadFromPLC(chiefdb);
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});
 		}
