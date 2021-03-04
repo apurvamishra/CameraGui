@@ -14,19 +14,43 @@
                 <Setter Property="Padding" Value="5,2"/>
             </Style>
         </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
-        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" 
-                   GotFocus = "ToggleIndicator"
-                   Canvas.Top="20" Canvas.Left="20" StrokeThickness="3" 
-                   Margin="10,10,10,0" VerticalAlignment="Top" />
-        <TextBlock Text="LED OFF" FontSize="16" Foreground="#FFDEAD" Name="LEDText"
-                   Margin="15,15,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"></TextBlock>
+        <!-- Angle X -->
+        <Rectangle Height="100" Width="75" Fill="LightGoldenrodYellow" Name="AngleXBack" StrokeThickness="3" 
+                   Margin="10,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
+        <TextBlock FontSize="16" Foreground="DarkGoldenrod" Name="AngleXText"  Padding="1,1,1,1"
+                   Text="1 million" Margin="10,52,715,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Center" 
+                   Grid.ColumnSpan="2" Height="100" Width="75">
+            Angle X</TextBlock>
 
-        <Button Click = "YClicked" Height="30" Width="60" 
-                Margin="0,0,0,10" VerticalAlignment="Bottom">
+        <!-- Angle Y -->
+        <Rectangle Height="100" Width="75" Fill="LightPink" Name="AngleYBack" StrokeThickness="3" 
+                   Margin="100,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
+        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText" Padding="1,1,1,1"
+                   Text="Very small number" Margin="100,52,625,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Center"
+                   Grid.ColumnSpan="2" Height="100" Width="75">
+            Angle Y</TextBlock>
+
+        <!-- LED Indicator -->
+        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3" 
+                   Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+        <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDText"
+                   Text="{Binding Path=MessageText, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged}"
+                   Margin="408,15,392,0" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+            LED OFF</TextBlock>
+
+        <!-- Buttons -->
+        <Button Click = "YClicked" 
+                Margin="100,157,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="76" Height="30" VerticalAlignment="Top">
             Level (Y)</Button>
-        <Button Click = "XClicked" Height="30" Width="60" Margin="0,0,0,45" 
-                HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Button Click = "XClicked" Margin="10,157,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="75" Height="30" VerticalAlignment="Top">
             Level (X)</Button>
     </Grid>
 </Page>

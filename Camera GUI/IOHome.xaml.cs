@@ -21,7 +21,7 @@ using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reflection;
 using System.Threading;
-
+using System.Windows.Threading;
 
 
 namespace Camera_GUI
@@ -49,21 +49,6 @@ namespace Camera_GUI
 			}
 		}
 
-		public void ToggleIndicator(object sender, RoutedEventArgs e)
-        {
-			Dispatcher.Invoke(() =>
-			{
-				if (newMotorState is false)
-				{
-					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
-				}
-				else
-				{
-					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
-				}
-			});
-		}
-
 		public IOHome()
 		{
 			// Connecting to PLC
@@ -78,7 +63,25 @@ namespace Camera_GUI
 			// Grab the PLC information
 
 			// Update GUI
-			
+
+			Dispatcher.Invoke(delegate
+			{
+				if (newMotorState is false)
+				{
+					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(255, 242, 213));
+					string UpdateText = "LED is off";
+					LEDText.Text = UpdateText;
+				}
+				else
+				{
+					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
+					string UpdateText = "LED is on";
+                    LEDText.Text = UpdateText;
+				}
+				
+			});
 		}
 
 		public void ConnectToPLC()
@@ -90,7 +93,7 @@ namespace Camera_GUI
 
 			// Setup program
 			var chiefDB = new ChiefDatabase();
-			var acclinDBNum = 4;
+			var acclinDBNum = 3;
 			plc.Connect();
 			chiefDB.ReadFromDB(plc, acclinDBNum);
 			// FAULT DATA
