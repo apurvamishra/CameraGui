@@ -22,20 +22,22 @@
         <!-- Angle X -->
         <Rectangle Height="100" Width="75" Fill="LightGoldenrodYellow" Name="AngleXBack" StrokeThickness="3" 
                    Margin="10,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-        <TextBlock FontSize="16" Foreground="DarkGoldenrod" Name="AngleXText"  Padding="1,1,1,1"
-                   Text="1 million" Margin="10,52,715,0" TextWrapping="Wrap" TextAlignment="Center"
-                   VerticalAlignment="Top" HorizontalAlignment="Center" 
+        <TextBlock FontSize="16" Foreground="DarkGoldenrod" Name="AngleXText"
+                   Text="1 million" Margin="10,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Left" 
                    Grid.ColumnSpan="2" Height="100" Width="75">
-            Angle X</TextBlock>
+
+        </TextBlock>
 
         <!-- Angle Y -->
         <Rectangle Height="100" Width="75" Fill="LightPink" Name="AngleYBack" StrokeThickness="3" 
                    Margin="100,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText" Padding="1,1,1,1"
-                   Text="Very small number" Margin="100,52,625,0" TextWrapping="Wrap" TextAlignment="Center"
-                   VerticalAlignment="Top" HorizontalAlignment="Center"
+        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText"
+                   Text="Very small number" Margin="100,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Left"
                    Grid.ColumnSpan="2" Height="100" Width="75">
-            Angle Y</TextBlock>
+
+        </TextBlock>
 
         <!-- LED Indicator -->
         <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3" 
@@ -44,7 +46,8 @@
                    Text="{Binding Path=MessageText, Mode=TwoWay, 
                     UpdateSourceTrigger=PropertyChanged}"
                    Margin="408,15,392,0" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-            LED OFF</TextBlock>
+
+        </TextBlock>
 
         <!-- Buttons -->
         <Button Click = "YClicked" 

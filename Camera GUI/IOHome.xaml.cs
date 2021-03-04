@@ -145,8 +145,8 @@ namespace Camera_GUI
 					// THIS SECTION OF CODE WILL REPEAT
 
 					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
-					Console.WriteLine(chiefdb.SetState.Value);
-					newMotorState = chiefdb.SetState.Value;
+					Console.WriteLine(chiefdb.Power.Value);
+					newMotorState = chiefdb.Power.Value;
 					ReadFromPLC(chiefdb);
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});
