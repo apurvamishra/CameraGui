@@ -12,9 +12,9 @@ namespace Camera_GUI
         [Order(1)]
         public JPLCProperty<bool> Power { get; set; }
         [Order(2)]
-        public JPLCProperty<int> InclineX { get; set; }
+        public JPLCProperty<short> InclineX { get; set; }
         [Order(3)]
-        public JPLCProperty<int> InclineY { get; set; }
+        public JPLCProperty<short> InclineY { get; set; }
 
         public ChiefDatabase(int address = 0) : base(address) {  }
     }

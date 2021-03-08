@@ -32,6 +32,10 @@ namespace Camera_GUI
 	public partial class IOHome : Page
 	{
 		public bool newMotorState = false;
+		public int newXState;
+		public int newYState;
+		readonly string LEDOff = "LED is off";
+		readonly string LEDOn = "LED is on";
 
 		private void XClicked(object sender, RoutedEventArgs e)
 		{
@@ -68,19 +72,22 @@ namespace Camera_GUI
 			{
 				if (newMotorState is false)
 				{
+					LEDText.Text = LEDOff;
 					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
 					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(255, 242, 213));
-					string UpdateText = "LED is off";
-					LEDText.Text = UpdateText;
+					
 				}
 				else
 				{
+					LEDText.Text = LEDOn;
 					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
 					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
-					string UpdateText = "LED is on";
-                    LEDText.Text = UpdateText;
+                    
 				}
-				
+
+				AngleXText.Text = newXState.ToString() + " degrees";
+				AngleYText.Text = newYState.ToString() + " degrees";
+
 			});
 		}
 
@@ -93,7 +100,7 @@ namespace Camera_GUI
 
 			// Setup program
 			var chiefDB = new ChiefDatabase();
-			var acclinDBNum = 3;
+			var acclinDBNum = 4;
 			plc.Connect();
 			chiefDB.ReadFromDB(plc, acclinDBNum);
 			// FAULT DATA
@@ -147,6 +154,8 @@ namespace Camera_GUI
 					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
 					Console.WriteLine(chiefdb.Power.Value);
 					newMotorState = chiefdb.Power.Value;
+					newXState = chiefdb.InclineX.Value;
+					newYState = chiefdb.InclineY.Value;
 					ReadFromPLC(chiefdb);
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});

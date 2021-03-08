@@ -20,40 +20,42 @@
         </Grid.ColumnDefinitions>
 
         <!-- Angle X -->
-        <Rectangle Height="100" Width="75" Fill="LightGoldenrodYellow" Name="AngleXBack" StrokeThickness="3" 
+        <Rectangle Height="30" Width="250" Fill="LightGoldenrodYellow" Name="AngleXBack" StrokeThickness="3" 
                    Margin="10,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-        <TextBlock FontSize="16" Foreground="DarkGoldenrod" Name="AngleXText"
-                   Text="1 million" Margin="10,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
-                   VerticalAlignment="Top" HorizontalAlignment="Left" 
-                   Grid.ColumnSpan="2" Height="100" Width="75">
 
-        </TextBlock>
+        <TextBlock FontSize="16" Foreground="DarkOrange" Name="AngleXText"
+                   Text="X Value"
+                   Margin="10,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Left" 
+                   Grid.ColumnSpan="2" Height="30" Width="250"></TextBlock>
+
+        <Button Click = "XClicked" Margin="265,52,0,0" 
+                Grid.ColumnSpan="2" Width="75" Height="30" 
+                HorizontalAlignment="Left" VerticalAlignment="Top">Level (X)</Button>
 
         <!-- Angle Y -->
-        <Rectangle Height="100" Width="75" Fill="LightPink" Name="AngleYBack" StrokeThickness="3" 
-                   Margin="100,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText"
-                   Text="Very small number" Margin="100,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
-                   VerticalAlignment="Top" HorizontalAlignment="Left"
-                   Grid.ColumnSpan="2" Height="100" Width="75">
+        <Rectangle Height="30" Width="250" Fill="LightPink" Name="AngleYBack" StrokeThickness="3" 
+                   Margin="10,87,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
 
-        </TextBlock>
+        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText"
+                   Text="Y Value" 
+                   Margin="10,87,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   VerticalAlignment="Top" HorizontalAlignment="Left"
+                   Grid.ColumnSpan="2" Height="30" Width="250"></TextBlock>
+
+        <Button Click = "YClicked" 
+                Margin="265,87,0,0" Grid.ColumnSpan="2" Width="75" Height="30"
+                HorizontalAlignment="Left" VerticalAlignment="Top">Level (Y)</Button>
 
         <!-- LED Indicator -->
         <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3" 
                    Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+
         <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDText"
-                   Text="{Binding Path=MessageText, Mode=TwoWay, 
-                    UpdateSourceTrigger=PropertyChanged}"
+                   Text="LED"
                    Margin="408,15,392,0" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
 
         </TextBlock>
 
-        <!-- Buttons -->
-        <Button Click = "YClicked" 
-                Margin="100,157,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="76" Height="30" VerticalAlignment="Top">
-            Level (Y)</Button>
-        <Button Click = "XClicked" Margin="10,157,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="75" Height="30" VerticalAlignment="Top">
-            Level (X)</Button>
     </Grid>
 </Page>
