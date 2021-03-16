@@ -24,10 +24,8 @@
         </Grid.ColumnDefinitions>
 
         <!-- LED Indicator -->
-        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3"
-                   Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-        <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDText" Width="100"
-                   Text="LED" Margin="358,15,342,0" FontFamily="Century Gothic"
+        <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDIndicator" Width="780" Background="#568BB3"
+                   Text="LED" Margin="10,10,10,0" FontFamily="Century Gothic" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
 
         <!-- Angle X -->

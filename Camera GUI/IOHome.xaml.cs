@@ -42,17 +42,17 @@ namespace Camera_GUI
 
 		private void XClicked(object sender, RoutedEventArgs e)
 		{
-			LEDColour.Fill = new SolidColorBrush(Color.FromRgb(70, 172, 204));
+			LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(70, 172, 204));
 		}
 		private void YClicked(object sender, RoutedEventArgs e)
 		{
 			if (newMotorState is false)
 			{
-				LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+				LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(86, 139, 179));
 			}
 			else
 			{
-				LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+				LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(173, 220, 255));
 			}
 		}
 
@@ -62,7 +62,6 @@ namespace Camera_GUI
 			{
 				Keyboard.ClearFocus();
 			}
-
 		}
 		private void XReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
 		{
@@ -71,7 +70,6 @@ namespace Camera_GUI
 				XSetBox.Text = XSetField.Text;
 				XSetField.Text = "";
 			}
-
 		}
 		private void YReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
 		{
@@ -80,7 +78,6 @@ namespace Camera_GUI
 				YSetBox.Text = YSetField.Text;
 				YSetField.Text = "";
 			}
-
 		}
 		private void PanReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -102,41 +99,27 @@ namespace Camera_GUI
 
 		public void UpdatePLC(ChiefDatabase CB)
         {
-			// Grab the PLC information
-
-			// Update GUI
-
 			Dispatcher.Invoke(delegate
 			{
 				if (newMotorState is false)
 				{
-					LEDText.Text = LEDOff;
-					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(86, 139, 179));
-					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(255, 242, 213));
-					
+					LEDIndicator.Text = LEDOff;
+					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+					LEDIndicator.Foreground = new SolidColorBrush(Color.FromRgb(255, 242, 213));
 				}
 				else
 				{
-					LEDText.Text = LEDOn;
-					LEDColour.Fill = new SolidColorBrush(Color.FromRgb(173, 220, 255));
-					LEDText.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
-                    
+					LEDIndicator.Text = LEDOn;
+					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+					LEDIndicator.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
 				}
-
 				AngleXText.Text = angle_x.ToString() + " degrees";
 				AngleYText.Text = angle_y.ToString() + " degrees";
 				PanReadBox.Text = pan_reading.ToString() + " degrees";
-			});
-		}
 
-		public void CheckPanSetBox(ChiefDatabase CB)
-		{
-			Dispatcher.Invoke(delegate
-			{
 				float.TryParse(XSetBox.Text, out x_set_box);
 				float.TryParse(YSetBox.Text, out y_set_box);
 				float.TryParse(PanSetBox.Text, out pan_set_box);
-				
 			});
 		}
 
@@ -169,26 +152,6 @@ namespace Camera_GUI
 				}
 				return Disposable.Empty;
 			});
-
-/*			// WRITE TO PLC
-			var writeDBObservable = Observable.Create<ChiefDatabase>(o =>
-			{
-				var result = writeDB.WriteToDB(plc, acclinDBNum);
-				if (result != 0)
-				{
-					o.OnError(new Exception("Could not write to DB"));
-					Console.WriteLine("Write failure");
-				}
-				else
-				{
-					o.OnNext(writeDB);
-					o.OnCompleted();
-				}
-				return Disposable.Empty;
-			});*/
-
-/*			var combinedDBObservable = Observable
-				.Zip(readDBObservable, (readdb, writedb) => (readdb, writedb));*/
 
 			// ESTABLISH CONNECTION
 			var observable = Observable.Create<ChiefDatabase>(o =>
@@ -231,13 +194,12 @@ namespace Camera_GUI
 					angle_y = Math.Round(chiefdb.y_out.Value,1);
 					pan_reading = Math.Round(chiefdb.pan_out.Value,1);
 					//Writing
-					CheckPanSetBox(chiefDB);
+					UpdatePLC(chiefdb);
 					chiefdb.x_in.Value = x_set_box;
 					chiefdb.y_in.Value = y_set_box;
 					chiefdb.pan_in.Value = pan_set_box;
 					chiefDB.WriteToDB(plc, acclinDBNum);
-					//UpdateGUI
-					UpdatePLC(chiefdb);
+					
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});
 		}
