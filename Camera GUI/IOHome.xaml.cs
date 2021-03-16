@@ -23,7 +23,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Threading;
 
-
 namespace Camera_GUI
 {
 	/// <summary>
@@ -32,10 +31,14 @@ namespace Camera_GUI
 	public partial class IOHome : Page
 	{
 		public bool newMotorState = false;
-		public int newXState;
-		public int newYState;
+		public double angle_x;
+		public double angle_y;
+		public double pan_reading;
 		readonly string LEDOff = "LED is off";
 		readonly string LEDOn = "LED is on";
+		public float x_set_box;
+		public float y_set_box;
+		public float pan_set_box;
 
 		private void XClicked(object sender, RoutedEventArgs e)
 		{
@@ -53,6 +56,41 @@ namespace Camera_GUI
 			}
 		}
 
+		private void EscapePressed(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+			{
+				Keyboard.ClearFocus();
+			}
+
+		}
+		private void XReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Return)
+			{
+				XSetBox.Text = XSetField.Text;
+				XSetField.Text = "";
+			}
+
+		}
+		private void YReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == Key.Return)
+			{
+				YSetBox.Text = YSetField.Text;
+				YSetField.Text = "";
+			}
+
+		}
+		private void PanReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+			if (e.Key == Key.Return)
+            {
+				PanSetBox.Text = PanSetField.Text;
+				PanSetField.Text = "";
+            }
+		}
+
 		public IOHome()
 		{
 			// Connecting to PLC
@@ -62,7 +100,7 @@ namespace Camera_GUI
 			InitializeComponent();
 		}
 
-		public void ReadFromPLC(ChiefDatabase CB)
+		public void UpdatePLC(ChiefDatabase CB)
         {
 			// Grab the PLC information
 
@@ -85,9 +123,20 @@ namespace Camera_GUI
                     
 				}
 
-				AngleXText.Text = newXState.ToString() + " degrees";
-				AngleYText.Text = newYState.ToString() + " degrees";
+				AngleXText.Text = angle_x.ToString() + " degrees";
+				AngleYText.Text = angle_y.ToString() + " degrees";
+				PanReadBox.Text = pan_reading.ToString() + " degrees";
+			});
+		}
 
+		public void CheckPanSetBox(ChiefDatabase CB)
+		{
+			Dispatcher.Invoke(delegate
+			{
+				float.TryParse(XSetBox.Text, out x_set_box);
+				float.TryParse(YSetBox.Text, out y_set_box);
+				float.TryParse(PanSetBox.Text, out pan_set_box);
+				
 			});
 		}
 
@@ -103,7 +152,8 @@ namespace Camera_GUI
 			var acclinDBNum = 4;
 			plc.Connect();
 			chiefDB.ReadFromDB(plc, acclinDBNum);
-			// FAULT DATA
+
+			// READ PLC
 			var readDBObservable = Observable.Create<ChiefDatabase>(o =>
 			{
 				var result = chiefDB.ReadFromDB(plc, acclinDBNum);
@@ -120,6 +170,27 @@ namespace Camera_GUI
 				return Disposable.Empty;
 			});
 
+/*			// WRITE TO PLC
+			var writeDBObservable = Observable.Create<ChiefDatabase>(o =>
+			{
+				var result = writeDB.WriteToDB(plc, acclinDBNum);
+				if (result != 0)
+				{
+					o.OnError(new Exception("Could not write to DB"));
+					Console.WriteLine("Write failure");
+				}
+				else
+				{
+					o.OnNext(writeDB);
+					o.OnCompleted();
+				}
+				return Disposable.Empty;
+			});*/
+
+/*			var combinedDBObservable = Observable
+				.Zip(readDBObservable, (readdb, writedb) => (readdb, writedb));*/
+
+			// ESTABLISH CONNECTION
 			var observable = Observable.Create<ChiefDatabase>(o =>
 			{
 				Console.WriteLine($"Attempting to connect to PLC on ip={plc.IPAddress}, rack={plc.Rack}, slot={plc.Slot}");
@@ -153,12 +224,22 @@ namespace Camera_GUI
 
 					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
 					Console.WriteLine(chiefdb.Power.Value);
+
+					// Reading
 					newMotorState = chiefdb.Power.Value;
-					newXState = chiefdb.InclineX.Value;
-					newYState = chiefdb.InclineY.Value;
-					ReadFromPLC(chiefdb);
+					angle_x = Math.Round(chiefdb.x_out.Value,1);
+					angle_y = Math.Round(chiefdb.y_out.Value,1);
+					pan_reading = Math.Round(chiefdb.pan_out.Value,1);
+					//Writing
+					CheckPanSetBox(chiefDB);
+					chiefdb.x_in.Value = x_set_box;
+					chiefdb.y_in.Value = y_set_box;
+					chiefdb.pan_in.Value = pan_set_box;
+					chiefDB.WriteToDB(plc, acclinDBNum);
+					//UpdateGUI
+					UpdatePLC(chiefdb);
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});
 		}
-	}
+    }
 }

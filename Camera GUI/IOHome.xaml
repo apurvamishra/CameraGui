@@ -3,59 +3,75 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:local="clr-namespace:Camera_GUI"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="800"
       Title="IOGUI - Home">
 
-    <Grid Margin="0" Background="#FFDAE3F3">
+    <Grid Margin="0" Background="#FFDAE3F3" KeyDown="EscapePressed">
         <Grid.Resources>
             <Style TargetType="{x:Type Button}">
                 <Setter Property="Padding" Value="5,2"/>
             </Style>
         </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
+        <!-- LED Indicator -->
+        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3"
+                   Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+        <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDText" Width="100"
+                   Text="LED" Margin="358,15,342,0" FontFamily="Century Gothic"
+                   VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+
         <!-- Angle X -->
-        <Rectangle Height="30" Width="250" Fill="LightGoldenrodYellow" Name="AngleXBack" StrokeThickness="3" 
-                   Margin="10,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-
-        <TextBlock FontSize="16" Foreground="DarkOrange" Name="AngleXText"
-                   Text="X Value"
-                   Margin="10,52,0,0" TextWrapping="Wrap" TextAlignment="Center"
+        <TextBlock x:Name="XSetBox" Text="Pan Setting" Margin="10,47,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightSkyBlue" Foreground="Blue" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
+        <xctk:DecimalUpDown Watermark="Set X Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
+                            Background="AliceBlue" Foreground="Black" Margin="170,47,0,0" MinWidth="150"
+                            Increment=".5" Maximum="30" Minimum="-30" x:Name="XSetField" KeyDown="XReturnPressed"
+                            Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
+        <TextBlock FontSize="20" Foreground="Navy" Name="AngleXText" Background="CornflowerBlue"
+                   Text="X Value" FontFamily="Century Gothic"
+                   Margin="330,47,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left" 
-                   Grid.ColumnSpan="2" Height="30" Width="250"></TextBlock>
-
-        <Button Click = "XClicked" Margin="265,52,0,0" 
-                Grid.ColumnSpan="2" Width="75" Height="30" 
-                HorizontalAlignment="Left" VerticalAlignment="Top">Level (X)</Button>
+                   Grid.ColumnSpan="2" Height="30" Width="155" />
 
         <!-- Angle Y -->
-        <Rectangle Height="30" Width="250" Fill="LightPink" Name="AngleYBack" StrokeThickness="3" 
-                   Margin="10,87,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" />
-
-        <TextBlock FontSize="16" Foreground="DarkOrchid" Name="AngleYText"
-                   Text="Y Value" 
-                   Margin="10,87,0,0" TextWrapping="Wrap" TextAlignment="Center"
+        <TextBlock x:Name="YSetBox" Text="Pan Setting" Margin="10,82,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightPink" Foreground="DeepPink" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
+        <xctk:DecimalUpDown Watermark="Set Y Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
+                            Background="MistyRose" Foreground="Black" Margin="170,82,0,0" MinWidth="150"
+                            Increment=".5" Maximum="30" Minimum="-30" x:Name="YSetField" KeyDown="YReturnPressed"
+                            Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
+        <TextBlock FontSize="20" Foreground="Purple" Name="AngleYText"
+                   Text="Y Value" FontFamily="Century Gothic" Background="PaleVioletRed"
+                   Margin="330,82,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left"
-                   Grid.ColumnSpan="2" Height="30" Width="250"></TextBlock>
+                   Grid.ColumnSpan="2" Height="30" Width="155"></TextBlock>
 
-        <Button Click = "YClicked" 
-                Margin="265,87,0,0" Grid.ColumnSpan="2" Width="75" Height="30"
-                HorizontalAlignment="Left" VerticalAlignment="Top">Level (Y)</Button>
-
-        <!-- LED Indicator -->
-        <Rectangle Height="32" Fill="#568BB3" Name="LEDColour" StrokeThickness="3" 
-                   Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-
-        <TextBlock FontSize="16" Foreground="#FFDEAD" Name="LEDText"
-                   Text="LED"
-                   Margin="408,15,392,0" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-
-        </TextBlock>
+        <!-- Pan -->
+        <TextBlock x:Name="PanReadBox" Text="Pan Value" Margin="330,117,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="DarkSeaGreen" Foreground="DarkGreen"  VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155"/>
+        <xctk:DecimalUpDown Watermark="Set Pan Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
+                            Background="MintCream" Foreground="Black" Margin="170,117,0,0" MinWidth="150"
+                            Increment=".05" Maximum="16.5" Minimum="-16.5" Name="PanSetField" KeyDown="PanReturnPressed"
+                            Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
+        <TextBlock x:Name="PanSetBox" Text="Pan Setting" Margin="10,117,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightGreen" Foreground="Green" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
 
     </Grid>
 </Page>
