@@ -39,6 +39,8 @@ namespace Camera_GUI
 		public float x_set_box;
 		public float y_set_box;
 		public float pan_set_box;
+		float old_delta;
+		float new_delta;
 
 		private void XClicked(object sender, RoutedEventArgs e)
 		{
@@ -198,7 +200,13 @@ namespace Camera_GUI
 					chiefdb.x_in.Value = x_set_box;
 					chiefdb.y_in.Value = y_set_box;
 					chiefdb.pan_in.Value = pan_set_box;
-					chiefDB.WriteToDB(plc, acclinDBNum);
+
+					new_delta = x_set_box + y_set_box + pan_set_box;
+					if(new_delta != old_delta)
+                    {
+						chiefDB.WriteToDB(plc, acclinDBNum);
+					}
+					old_delta = new_delta;
 					
 					Console.WriteLine("\n" + "---------------------------------------------------------" + "\n");
 				});
