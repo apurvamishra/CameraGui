@@ -6,6 +6,7 @@
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:local="clr-namespace:Camera_GUI"
       mc:Ignorable="d" 
+      xmlns:System="clr-namespace:System;assembly=mscorlib"
       d:DesignHeight="500" d:DesignWidth="800"
       Title="IOGUI - Home">
 
@@ -29,47 +30,71 @@
                    VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
 
         <!-- Angle X -->
-        <TextBlock x:Name="XSetBox" Text="Pan Setting" Margin="10,47,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="XSetBox" Text="Pan Setting" Margin="10,35,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="LightSkyBlue" Foreground="Blue" VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
         <xctk:DecimalUpDown Watermark="Set X Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
-                            Background="AliceBlue" Foreground="Black" Margin="170,47,0,0" MinWidth="150"
+                            Background="AliceBlue" Foreground="Black" Margin="170,35,0,0" MinWidth="150"
                             Increment=".5" Maximum="30" Minimum="-30" x:Name="XSetField" KeyDown="XReturnPressed"
                             Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
                             VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
         <TextBlock FontSize="20" Foreground="Navy" Name="AngleXText" Background="CornflowerBlue"
                    Text="X Value" FontFamily="Century Gothic"
-                   Margin="330,47,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   Margin="330,35,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left" 
                    Grid.ColumnSpan="2" Height="30" Width="155" />
 
         <!-- Angle Y -->
-        <TextBlock x:Name="YSetBox" Text="Pan Setting" Margin="10,82,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="YSetBox" Text="Pan Setting" Margin="10,70,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="LightPink" Foreground="DeepPink" VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
         <xctk:DecimalUpDown Watermark="Set Y Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
-                            Background="MistyRose" Foreground="Black" Margin="170,82,0,0" MinWidth="150"
+                            Background="MistyRose" Foreground="Black" Margin="170,70,0,0" MinWidth="150"
                             Increment=".5" Maximum="30" Minimum="-30" x:Name="YSetField" KeyDown="YReturnPressed"
                             Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
                             VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
         <TextBlock FontSize="20" Foreground="Purple" Name="AngleYText"
                    Text="Y Value" FontFamily="Century Gothic" Background="PaleVioletRed"
-                   Margin="330,82,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                   Margin="330,70,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left"
                    Grid.ColumnSpan="2" Height="30" Width="155"></TextBlock>
 
         <!-- Pan -->
-        <TextBlock x:Name="PanReadBox" Text="Pan Value" Margin="330,117,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="PanReadBox" Text="Pan Value" Margin="330,105,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="DarkSeaGreen" Foreground="DarkGreen"  VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155"/>
         <xctk:DecimalUpDown Watermark="Set Pan Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
-                            Background="MintCream" Foreground="Black" Margin="170,117,0,0" MinWidth="150"
+                            Background="MintCream" Foreground="Black" Margin="170,105,0,0" MinWidth="150"
                             Increment=".05" Maximum="16.5" Minimum="-16.5" Name="PanSetField" KeyDown="PanReturnPressed"
                             Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
                             VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
-        <TextBlock x:Name="PanSetBox" Text="Pan Setting" Margin="10,117,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="PanSetBox" Text="Pan Setting" Margin="10,105,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="LightGreen" Foreground="Green" VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="155" />
+
+        <!-- Flash -->
+        <TextBlock x:Name="FlashBox" TextWrapping="Wrap" Margin="10,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="Black" Foreground="White" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="219" Text="Flashes: NULL"/>
+        <ToggleButton x:Name="FlashButton" Margin="10,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic"
+                      FontSize="20" Foreground="Black" Background="Gray" VerticalAlignment="Top" Content="Flash: OFF"
+                      HorizontalAlignment="Left" Height="30" Width="219" Checked="FlashButton_Checked" Unchecked="FlashButton_Checked"/>
+
+        <!-- Temperature -->
+        <TextBlock x:Name="CameraTempStatus" TextWrapping="Wrap" Margin="234,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="Black" Foreground="PowderBlue" VerticalAlignment="Top"
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="251" Height="30" Text="Cooling..." RenderTransformOrigin="1.74,0.833"/>
+        <TextBlock x:Name="CameraTempBox" TextWrapping="Wrap" Margin="234,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="DimGray" Foreground="LawnGreen" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="251" Text="Temperature: NULL degrees"/>
+
+        <!-- Battery -->
+        <TextBlock x:Name="BatteryLevelBox" TextWrapping="Wrap" Margin="10,197,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightGray" Foreground="Black" VerticalAlignment="Top" Text="Battery Level"
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="475" Height="30" />
+        <TextBlock x:Name="BatteryChargeBox" Margin="10,227,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="Green" Foreground="White" VerticalAlignment="Top" Text=""
+                   HorizontalAlignment="Left" TextAlignment="Center" MinWidth="40" MaxWidth="475"/>
 
     </Grid>
 </Page>

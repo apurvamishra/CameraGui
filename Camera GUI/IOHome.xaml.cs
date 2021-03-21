@@ -30,32 +30,37 @@ namespace Camera_GUI
 	/// </summary>
 	public partial class IOHome : Page
 	{
-		public bool newMotorState = false;
+		public bool flash_state;
+		public bool cool_state;
 		public double angle_x;
 		public double angle_y;
 		public double pan_reading;
+		public double temperature;
+		public double battery_level;
 		readonly string LEDOff = "LED is off";
 		readonly string LEDOn = "LED is on";
 		public float x_set_box;
 		public float y_set_box;
 		public float pan_set_box;
+		string flash_text;
+		short flash_number;
+
 		float old_delta;
 		float new_delta;
 
-		private void XClicked(object sender, RoutedEventArgs e)
+		private void FlashButton_Checked(object sender, RoutedEventArgs e)
 		{
-			LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(70, 172, 204));
-		}
-		private void YClicked(object sender, RoutedEventArgs e)
-		{
-			if (newMotorState is false)
-			{
-				LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(86, 139, 179));
+			if (FlashButton.IsChecked == true)
+            {
+				flash_text = "Flash: ON";
+				flash_state = true;
 			}
-			else
-			{
-				LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(173, 220, 255));
+            else
+            {
+				flash_text = "Flash: OFF";
+				flash_state = false;
 			}
+			FlashButton.Content = flash_text;
 		}
 
 		private void EscapePressed(object sender, System.Windows.Input.KeyEventArgs e)
@@ -99,11 +104,11 @@ namespace Camera_GUI
 			InitializeComponent();
 		}
 
-		public void UpdatePLC(ChiefDatabase CB)
+		public void UpdateGUI(ChiefDatabase CB)
         {
 			Dispatcher.Invoke(delegate
 			{
-				if (newMotorState is false)
+				if (flash_state is false)
 				{
 					LEDIndicator.Text = LEDOff;
 					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(86, 139, 179));
@@ -115,9 +120,26 @@ namespace Camera_GUI
 					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(173, 220, 255));
 					LEDIndicator.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
 				}
+				if (cool_state is true)
+				{
+					CameraTempStatus.Foreground = Brushes.PowderBlue;
+					string cooling = "Cooling...";
+					CameraTempStatus.Text = cooling;
+				}
+				else
+				{
+					CameraTempStatus.Foreground = Brushes.Moccasin;
+					string not_cooling = "Not Cooling";
+					CameraTempStatus.Text = not_cooling;
+				}
+
 				AngleXText.Text = angle_x.ToString() + " degrees";
 				AngleYText.Text = angle_y.ToString() + " degrees";
 				PanReadBox.Text = pan_reading.ToString() + " degrees";
+				CameraTempBox.Text = temperature.ToString() + " degrees";
+				FlashBox.Text = "Flashes: " + flash_number;
+				BatteryChargeBox.Text = battery_level.ToString() + "%";
+				BatteryChargeBox.Width = Math.Round(battery_level*4.75, 0);
 
 				float.TryParse(XSetBox.Text, out x_set_box);
 				float.TryParse(YSetBox.Text, out y_set_box);
@@ -188,20 +210,24 @@ namespace Camera_GUI
 					// THIS SECTION OF CODE WILL REPEAT
 
 					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
-					Console.WriteLine(chiefdb.Power.Value);
+					Console.WriteLine(chiefdb.flash_state.Value);
 
 					// Reading
-					newMotorState = chiefdb.Power.Value;
 					angle_x = Math.Round(chiefdb.x_out.Value,1);
 					angle_y = Math.Round(chiefdb.y_out.Value,1);
 					pan_reading = Math.Round(chiefdb.pan_out.Value,1);
+					flash_number = chiefdb.flash_count.Value;
+					temperature = Math.Round(chiefdb.temperature.Value, 1);
+					cool_state = chiefdb.cool_state.Value;
+					battery_level = Math.Round(chiefdb.battery_level.Value,0);
 					//Writing
-					UpdatePLC(chiefdb);
+					UpdateGUI(chiefdb);
+					chiefdb.flash_state.Value = flash_state;
 					chiefdb.x_in.Value = x_set_box;
 					chiefdb.y_in.Value = y_set_box;
 					chiefdb.pan_in.Value = pan_set_box;
 
-					new_delta = x_set_box + y_set_box + pan_set_box;
+					new_delta = x_set_box + y_set_box + pan_set_box + Convert.ToInt32(flash_state);
 					if(new_delta != old_delta)
                     {
 						chiefDB.WriteToDB(plc, acclinDBNum);
