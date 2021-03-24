@@ -75,18 +75,18 @@
         <!-- Flash -->
         <TextBlock x:Name="FlashBox" TextWrapping="Wrap" Margin="10,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="18" Background="Black" Foreground="White" VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="219" Text="Flashes: NULL"/>
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="140" Text="Flashes: NULL"/>
         <ToggleButton x:Name="FlashButton" Margin="10,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic"
                       FontSize="20" Foreground="Black" Background="Gray" VerticalAlignment="Top" Content="Flash: OFF"
-                      HorizontalAlignment="Left" Height="30" Width="219" Checked="FlashButton_Checked" Unchecked="FlashButton_Checked"/>
+                      HorizontalAlignment="Left" Height="30" Width="140" Checked="FlashButton_Checked" Unchecked="FlashButton_Checked"/>
 
         <!-- Temperature -->
-        <TextBlock x:Name="CameraTempStatus" TextWrapping="Wrap" Margin="234,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="CameraTempStatus" TextWrapping="Wrap" Margin="155,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="Black" Foreground="PowderBlue" VerticalAlignment="Top"
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="251" Height="30" Text="Cooling..." RenderTransformOrigin="1.74,0.833"/>
-        <TextBlock x:Name="CameraTempBox" TextWrapping="Wrap" Margin="234,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="200" Height="30" Text="Cooling..." RenderTransformOrigin="1.74,0.833"/>
+        <TextBlock x:Name="CameraTempBox" TextWrapping="Wrap" Margin="155,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="18" Background="DimGray" Foreground="LawnGreen" VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="251" Text="Temperature: NULL degrees"/>
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="200" Text="Temp: NULL degrees"/>
 
         <!-- Battery -->
         <TextBlock x:Name="BatteryLevelBox" TextWrapping="Wrap" Margin="10,197,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
@@ -95,6 +95,14 @@
         <TextBlock x:Name="BatteryChargeBox" Margin="10,227,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="18" Background="Green" Foreground="White" VerticalAlignment="Top" Text=""
                    HorizontalAlignment="Left" TextAlignment="Center" MinWidth="40" MaxWidth="475"/>
+
+        <!-- CCTV Monitoring -->
+        <TextBlock x:Name="CCTVHealth" TextWrapping="Wrap" Margin="360,140,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="SaddleBrown" Foreground="OldLace" VerticalAlignment="Top" Text="CCTV: ON"
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="125" Height="30" />
+        <TextBlock x:Name="AlarmBox" Margin="360,170,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="OldLace" Foreground="SaddleBrown" VerticalAlignment="Top" Text="Alarm: OFF"
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="125" Height="22"/>
 
     </Grid>
 </Page>

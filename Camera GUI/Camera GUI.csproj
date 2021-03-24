@@ -96,10 +96,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="IOGUI Stats.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="IOHome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -113,9 +109,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ChiefDatabase.cs" />
-    <Compile Include="IOGUI Stats.xaml.cs">
-      <DependentUpon>IOGUI Stats.xaml</DependentUpon>
-    </Compile>
     <Compile Include="IOHome.xaml.cs">
       <DependentUpon>IOHome.xaml</DependentUpon>
     </Compile>
