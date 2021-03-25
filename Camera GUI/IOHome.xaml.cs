@@ -165,7 +165,10 @@ namespace Camera_GUI
         {
 			// Connecting to PLC
 			JPLCConnection plc = new JPLCConnection("192.168.1.140", 0, 1);
+			// Upon a failed connection, will wait an extra section of time before trying again
+			// For larger databases, this is best to be a larger number
 			double timeBetweenRetries = 0.06; // seconds
+			// The time between successful reads of the database
 			double timeBetweenReads = 0.05; //seconds
 
 			// Setup program, which creates a database object, references the database, and uses a connect Function
@@ -180,7 +183,9 @@ namespace Camera_GUI
 			// The observable will feed data back to an observer to be analysed
 			var readDBObservable = Observable.Create<ChiefDatabase>(o =>
 			{
+				// This runs the ReadFromDB function, which updates the local database from the PLC's database
 				var result = chiefDB.ReadFromDB(plc, acclinDBNum);
+				// The next two statements are error checking, so the local database can read at the right time
 				if (result != 0)
 				{
 					o.OnError(new Exception("Could not read from DB"));
@@ -194,7 +199,8 @@ namespace Camera_GUI
 				return Disposable.Empty;
 			});
 
-			// ESTABLISH CONNECTION
+			// -- ESTABLISH CONNECTION --
+			// This observable establishes a connection with the PLC with the given details. 
 			var observable = Observable.Create<ChiefDatabase>(o =>
 			{
 				Console.WriteLine($"Attempting to connect to PLC on ip={plc.IPAddress}, rack={plc.Rack}, slot={plc.Slot}");
@@ -210,25 +216,29 @@ namespace Camera_GUI
 				}
 				return Disposable.Empty;
 			})
+				// The important part of this function is setting up the subscription elements
+				// Here, it is organising our read observable so that the database is constantly read
 			.Concat(
 				Observable
+				// The interval between successful executions of the zipped observable
 				.Interval(TimeSpan.FromSeconds(timeBetweenReads))
+				// Packs the observable up into a pointer location called dbs 
 				.Zip(readDBObservable, (interval, dbs) => dbs)
+				// Repeats the command ...
 				.Repeat()
 			);
 
 			// A disposable variable that subscribes a set of commands to a scheduler, which executes every so often
 			var disposable = observable
 				.ObserveOn(System.Reactive.Concurrency.TaskPoolScheduler.Default)
+				// If errors are detected, the loop will pause for the given timespan
 				.RetryWhen(errors => errors.SelectMany(Observable.Timer(TimeSpan.FromSeconds(timeBetweenRetries))))
+				// Subscribes 
 				.Subscribe(dbs =>
 				{
 					var chiefdb = dbs;
 					//===============================================================================
 					// THIS SECTION OF CODE WILL REPEAT
-
-					Console.WriteLine("\n" + $"Reading from PLC Beam / Fault DataBase on {DateTime.Now}");
-					Console.WriteLine(chiefdb.flash_state.Value);
 
 					// -- READING --
 					// The following lines are taking data from the database object, and copying them to global variables
