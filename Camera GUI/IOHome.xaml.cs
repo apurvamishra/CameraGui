@@ -32,23 +32,28 @@ namespace Camera_GUI
 	{
 		// A large amount of variables, all meant for temporary storage for data being read, to being set in the GUI
 		// Some of these could be removed or combined, they're rather inconsistent
-		public bool flash_state;
+		public bool level;
+		public bool pan;
 		public bool cool_state;
 		public double angle_x;
 		public double angle_y;
 		public double pan_reading;
 		public double temperature;
 		public double battery_level;
-		readonly string LEDOff = "LED is off";
-		readonly string LEDOn = "LED is on";
 		public float x_set_box;
 		public float y_set_box;
 		public float pan_set_box;
 		string flash_text;
 		short flash_number;
+		public bool e_stop;
+		public bool M1B;
+		public bool M1F;
+		public bool M2B;
+		public bool M2F;
 
-		float old_delta;
-		float new_delta;
+		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+		float old_data_sum;
+		float data_sum;
 
 		// This function is called to alter the LED bar at the top, is currently unused
 		private void FlashButton_Checked(object sender, RoutedEventArgs e)
@@ -56,14 +61,18 @@ namespace Camera_GUI
 			if (FlashButton.IsChecked == true)
             {
 				flash_text = "Flash: ON";
-				flash_state = true;
 			}
             else
             {
 				flash_text = "Flash: OFF";
-				flash_state = false;
 			}
 			FlashButton.Content = flash_text;
+		}
+
+		private void LevelStatus_Click(object sender, RoutedEventArgs e)
+		{
+			level = true;
+			
 		}
 
 		// This function is somewhat incomplete, removing the focus from GUI elements when the escape key is pressed
@@ -117,20 +126,8 @@ namespace Camera_GUI
         {
 			Dispatcher.Invoke(delegate
 			{
-				// IF/ELSE statements controlling whether the GUI element is on or off
-				if (flash_state is false)
-				{
-					LEDIndicator.Text = LEDOff;
-					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(86, 139, 179));
-					LEDIndicator.Foreground = new SolidColorBrush(Color.FromRgb(255, 242, 213));
-				}
-				else
-				{
-					LEDIndicator.Text = LEDOn;
-					LEDIndicator.Background = new SolidColorBrush(Color.FromRgb(173, 220, 255));
-					LEDIndicator.Foreground = new SolidColorBrush(Color.FromRgb(179, 142, 86));
-				}
-				// Similarly, these statements will update the gui whether the cooling system is on or off
+
+				// IF/ELSE statements will update the gui whether the cooling system is on or off
 				if (cool_state is true)
 				{
 					CameraTempStatus.Foreground = Brushes.PowderBlue;
@@ -152,11 +149,18 @@ namespace Camera_GUI
 				FlashBox.Text = "Flashes: " + flash_number;
 				BatteryChargeBox.Text = battery_level.ToString() + "%";
 				BatteryChargeBox.Width = Math.Round(battery_level*4.75, 0);
+				e_stop = (bool)STOP.IsChecked;
+				M1B = Jog_M1B.IsChecked.Value;
+				M1F = Jog_M1F.IsChecked.Value;
+				M2B = Jog_M2B.IsChecked.Value;
+				M2F = Jog_M2F.IsChecked.Value;
 
 				// In order to get the target angles, the strings in the x, y and pan fields are parsed to floats
 				float.TryParse(XSetBox.Text, out x_set_box);
 				float.TryParse(YSetBox.Text, out y_set_box);
 				float.TryParse(PanSetBox.Text, out pan_set_box);
+
+				Console.WriteLine("Timer: " + t.ToString());
 			});
 		}
 
@@ -242,8 +246,8 @@ namespace Camera_GUI
 
 					// -- READING --
 					// The following lines are taking data from the database object, and copying them to global variables
-					angle_x = Math.Round(chiefdb.x_out.Value,1);
-					angle_y = Math.Round(chiefdb.y_out.Value,1);
+					angle_x = Math.Round(((double)chiefdb.x_out.Value / 27648 * 90) - 45, 2);
+					angle_y = Math.Round(((double)chiefdb.y_out.Value / 27648 * 90) - 45, 2);
 					pan_reading = Math.Round(chiefdb.pan_out.Value,1);
 					flash_number = chiefdb.flash_count.Value;
 					temperature = Math.Round(chiefdb.temperature.Value, 1);
@@ -254,23 +258,73 @@ namespace Camera_GUI
 					// First, the GUI will update the gui based off the most recent data, so that the PLC can recieve the newest data
 					UpdateGUI(chiefdb);
 					// The next lines copy data into  the database 
-					chiefdb.flash_state.Value = flash_state;
-					chiefdb.x_in.Value = x_set_box;
-					chiefdb.y_in.Value = y_set_box;
-					chiefdb.pan_in.Value = pan_set_box;
+					chiefdb.level.Value = level;
+					chiefdb.pan.Value = pan;
+					chiefdb.x_in.Value = (x_set_box + 45) / 90 * 27648;
+					chiefdb.y_in.Value = (y_set_box + 45) / 90 * 27648;
+					chiefdb.pan_in.Value = (pan_set_box + 45) / 90 * 27648;
+					chiefdb.e_stop.Value = e_stop;
+					chiefdb.M1B.Value = M1B;
+					chiefdb.M1F.Value = M1F;
+					chiefdb.M2B.Value = M2B;
+					chiefdb.M2F.Value = M2F;
 
 					// delta is a concept that minimises bandwidth across the connection from the PC to the PLC
-					// This first line adds up data to a non-important figure
-					new_delta = x_set_box + y_set_box + pan_set_box + Convert.ToInt32(flash_state);
-					// If new_delta has changed since the last measurement, then the given command/s are executed
-					if(new_delta != old_delta)
+					// This first line adds up data to an arbitrary number
+					data_sum = x_set_box + y_set_box + pan_set_box 
+						+ Convert.ToInt32(level) + Convert.ToInt32(pan) + Convert.ToInt32(e_stop)
+						+ Convert.ToInt32(M1B) + Convert.ToInt32(M1F) + Convert.ToInt32(M2B) + Convert.ToInt32(M2F);
+					// If data_sum has changed since the last measurement, then the given command/s are executed
+					if(data_sum != old_data_sum)
                     {
 						chiefDB.WriteToDB(plc, acclinDBNum);
 					}
 					// To ensure the difference between values can be measured, the old value must be saved for future reference
 					// This is done after the comparison so that by the time the next comparison happens, the old and new deltas might be different
-					old_delta = new_delta;
+					old_data_sum = data_sum;
+
+					if (level == true)
+					{
+						level = false;
+					}
 				});
+		}
+
+        private void X_Down_Click(object sender, RoutedEventArgs e)
+        {
+			float.TryParse(XSetBox.Text, out x_set_box);
+			x_set_box -= (float)0.1;
+			XSetBox.Text = x_set_box.ToString("0.00");
+		}
+        private void X_Up_Click(object sender, RoutedEventArgs e)
+        {
+			float.TryParse(XSetBox.Text, out x_set_box);
+			x_set_box += (float)0.1;
+			XSetBox.Text = x_set_box.ToString("0.00");
+		}
+        private void Y_Down_Click(object sender, RoutedEventArgs e)
+        {
+			float.TryParse(YSetBox.Text, out y_set_box);
+			y_set_box -= (float)0.1;
+			YSetBox.Text = y_set_box.ToString("0.00");
+		}
+        private void Y_Up_Click(object sender, RoutedEventArgs e)
+        {
+			float.TryParse(YSetBox.Text, out y_set_box);
+			y_set_box += (float)0.1;
+			YSetBox.Text = y_set_box.ToString("0.00");
+		}
+		private void Pan_Down_Click(object sender, RoutedEventArgs e)
+		{
+			float.TryParse(PanSetBox.Text, out pan_set_box);
+			pan_set_box -= (float)0.1;
+			PanSetBox.Text = pan_set_box.ToString("0.00");
+		}
+		private void Pan_Up_Click(object sender, RoutedEventArgs e)
+        {
+			float.TryParse(PanSetBox.Text, out pan_set_box);
+			pan_set_box += (float)0.1;
+			PanSetBox.Text = pan_set_box.ToString("0.00");
 		}
     }
 }
