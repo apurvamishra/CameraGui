@@ -24,16 +24,20 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <!-- Level Button -->
-        <Button FontSize="20" Foreground="#FFDEAD" Name="LevelStatus" Background="Purple"
-                      Content="Level" Margin="495,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="65"
-                      HorizontalAlignment="Left" Width="173" Click="LevelStatus_Click"/>
-
-        <!-- Angle X -->
+        <!-- Angle X Jog Buttons -->
+        <RepeatButton FontSize="20" Foreground="Blue" x:Name="X_Down" Background="LightSkyBlue"
+                      Content="-" Margin="10,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
+                      HorizontalAlignment="Left" Width="35" Click="X_Down_Click"/>
         <TextBlock x:Name="XSetBox" Text="Pan Setting" Margin="45,10,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="LightSkyBlue" Foreground="Blue" VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="120" />
+        <RepeatButton FontSize="20" Foreground="Blue" x:Name="X_Up" Background="LightSkyBlue"
+                      Content="+" Margin="165,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
+                      HorizontalAlignment="Left" Width="35" Click="X_Up_Click"/>
+
+        <!-- Angle X -->
         <xctk:DecimalUpDown Watermark="Set X Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
                             Background="AliceBlue" Foreground="Black" Margin="205,10,0,0" MinWidth="150"
                             Increment=".5" Maximum="30" Minimum="-30" x:Name="XSetField" KeyDown="XReturnPressed"
@@ -43,22 +47,22 @@
                    Text="X Value" FontFamily="Century Gothic"
                    Margin="365,10,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left" 
-                   Grid.ColumnSpan="2" Height="30" Width="125" />
+                   Grid.ColumnSpan="2" Height="30" Width="150" />
 
-        <!-- Angle X Jog Buttons -->
-        <RepeatButton FontSize="20" Foreground="Blue" x:Name="X_Down" Background="LightSkyBlue"
-                      Content="-" Margin="10,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+        <!-- Angle Y Jog Buttons -->
+        <RepeatButton FontSize="20" Foreground="DeepPink" x:Name="Y_Down" Background="LightPink"
+                      Content="-" Margin="10,45,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
                       VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
-                      HorizontalAlignment="Left" Width="35" Click="X_Down_Click"/>
-        <RepeatButton FontSize="20" Foreground="Blue" x:Name="X_Up" Background="LightSkyBlue"
-                      Content="+" Margin="165,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
-                      HorizontalAlignment="Left" Width="35" Click="X_Up_Click"/>
-
-        <!-- Angle Y -->
+                      HorizontalAlignment="Left" Width="35" Click="Y_Down_Click"/>
         <TextBlock x:Name="YSetBox" Text="Pan Setting" Margin="45,45,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="LightPink" Foreground="DeepPink" VerticalAlignment="Top" 
                    HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="120" />
+        <RepeatButton FontSize="20" Foreground="DeepPink" x:Name="Y_Up" Background="LightPink"
+                      Content="+" Margin="165,45,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
+                      HorizontalAlignment="Left" Width="35" Click="Y_Up_Click"/>
+
+        <!-- Angle Y -->
         <xctk:DecimalUpDown Watermark="Set Y Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
                             Background="MistyRose" Foreground="Black" Margin="205,45,0,0" MinWidth="150"
                             Increment=".5" Maximum="30" Minimum="-30" x:Name="YSetField" KeyDown="YReturnPressed"
@@ -68,102 +72,103 @@
                    Text="Y Value" FontFamily="Century Gothic" Background="PaleVioletRed"
                    Margin="365,45,0,0" TextWrapping="Wrap" TextAlignment="Center"
                    VerticalAlignment="Top" HorizontalAlignment="Left"
-                   Grid.ColumnSpan="2" Height="30" Width="125"/>
-
-        <!-- Angle Y Jog Buttons -->
-        <RepeatButton FontSize="20" Foreground="DeepPink" x:Name="Y_Down" Background="LightPink"
-                      Content="-" Margin="10,45,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
-                      HorizontalAlignment="Left" Width="35" Click="Y_Down_Click"/>
-        <RepeatButton FontSize="20" Foreground="DeepPink" x:Name="Y_Up" Background="LightPink"
-                      Content="+" Margin="165,45,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
-                      HorizontalAlignment="Left" Width="35" Click="Y_Up_Click"/>
-
-        <!-- Pan -->
-        <TextBlock x:Name="PanReadBox" Text="Pan Value" Margin="365,81,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
-                   FontSize="20" Background="DarkSeaGreen" Foreground="DarkGreen"  VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="125"/>
-        <xctk:DecimalUpDown Watermark="Set Pan Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
-                            Background="MintCream" Foreground="Black" Margin="205,79,0,0" MinWidth="150"
-                            Increment=".05" Maximum="16.5" Minimum="-16.5" Name="PanSetField" KeyDown="PanReturnPressed"
-                            Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
-                            VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
-        <TextBlock x:Name="PanSetBox" Text="Pan Setting" Margin="45,80,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
-                   FontSize="20" Background="LightGreen" Foreground="Green" VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="120" />
+                   Grid.ColumnSpan="2" Height="30" Width="150"/>
 
         <!-- Pan Jog Buttons -->
         <RepeatButton FontSize="20" Foreground="Green" x:Name="Pan_Down" Background="LightGreen"
                       Content="-" Margin="10,80,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
                       VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
                       HorizontalAlignment="Left" Width="35" Click="Pan_Down_Click"/>
+        <TextBlock x:Name="PanSetBox" Text="Pan Setting" Margin="45,80,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightGreen" Foreground="Green" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="120" />
         <RepeatButton FontSize="20" Foreground="Green" x:Name="Pan_Up" Background="LightGreen"
                       Content="+" Margin="165,80,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
                       VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30" FontWeight="ExtraBold"
                       HorizontalAlignment="Left" Width="35" Click="Pan_Up_Click"/>
 
+        <!-- Pan -->
+        <xctk:DecimalUpDown Watermark="Set Pan Angle" FormatString="F2" FontFamily="Century Gothic" FontSize="16"
+                            Background="MintCream" Foreground="Black" Margin="205,79,0,0" MinWidth="150"
+                            Increment=".05" Maximum="16.5" Minimum="-16.5" Name="PanSetField" KeyDown="PanReturnPressed"
+                            Grid.ColumnSpan="2" HorizontalContentAlignment="Center"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" Height="30"/>
+        <TextBlock x:Name="PanReadBox" Text="Pan Value" Margin="365,80,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="DarkSeaGreen" Foreground="DarkGreen"  VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Height="30" Width="150"/>
+
+        <!-- Level Button -->
+        <Button FontSize="20" Foreground="#FFDEAD" Name="LevelStatus" Background="Purple"
+                      Content="Level" Margin="520,10,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="66"
+                      HorizontalAlignment="Left" Width="173" Click="LevelStatus_Click"/>
+
         <!-- Pan Button -->
         <Button FontSize="20" Foreground="#FFDEAD" x:Name="PanStatus" Background="ForestGreen"
-                Content="Pan" Margin="495,81,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                Content="Pan" Margin="520,80,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
                 VerticalAlignment="Top" Grid.ColumnSpan="2" Height="30"
                 HorizontalAlignment="Left" Width="173"/>
 
-        <!-- Flash -->
-        <TextBlock x:Name="FlashBox" TextWrapping="Wrap" Margin="10,146,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
-                   FontSize="18" Background="Black" Foreground="White" VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="140" Text="Flashes: NULL"/>
-        <ToggleButton x:Name="FlashButton" Margin="10,116,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic"
-                      FontSize="20" Foreground="#FFDEAD" Background="Gray" VerticalAlignment="Top" Content="Flash: OFF"
-                      HorizontalAlignment="Left" Height="30" Width="140" Checked="FlashButton_Checked" Unchecked="FlashButton_Checked"/>
+        <!-- E Stop Button -->
+        <ToggleButton FontSize="30" Foreground="White" x:Name="STOP" Background="Red"
+                      Content="STOP" Margin="520,116,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="109" FontWeight="ExtraBold"
+                      HorizontalAlignment="Left" Width="175"/>
+
+        <!-- Temp Jog Buttons -->
+        <ToggleButton FontSize="20" Foreground="Black" x:Name="Jog_M1F" Background="Gold"
+                      Content="M1F" Margin="344,280,0,0" FontFamily="Century Gothic"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="53"
+                      HorizontalAlignment="Left" Width="70"/>
+        <ToggleButton FontSize="20" Foreground="Black" x:Name="Jog_M1B" Background="PaleGoldenrod"
+                      Content="M1B" Margin="269,236,0,0" FontFamily="Century Gothic"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="53"
+                      HorizontalAlignment="Left" Width="70"/>
+        <ToggleButton FontSize="20" Foreground="Black" x:Name="Jog_M2B" Background="Goldenrod"
+                      Content="M2B" Margin="194,280,0,0" FontFamily="Century Gothic"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="52"
+                      HorizontalAlignment="Left" Width="70"/>
+        <ToggleButton FontSize="20" Foreground="Black" x:Name="Jog_M2F" Background="DarkGoldenrod"
+                      Content="M2F" Margin="269,330,0,0" FontFamily="Century Gothic"
+                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="52"
+                      HorizontalAlignment="Left" Width="70"/>
 
         <!-- Temperature -->
-        <TextBlock x:Name="CameraTempStatus" TextWrapping="Wrap" Margin="155,116,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+        <TextBlock x:Name="CameraTempStatus" TextWrapping="Wrap" Margin="160,116,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="Black" Foreground="PowderBlue" VerticalAlignment="Top"
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="200" Height="30" Text="Cooling..." RenderTransformOrigin="1.74,0.833"/>
-        <TextBlock x:Name="CameraTempBox" TextWrapping="Wrap" Margin="155,146,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="195" Height="30" Text="Cooling..." RenderTransformOrigin="1.74,0.833"/>
+        <TextBlock x:Name="CameraTempBox" TextWrapping="Wrap" Margin="160,146,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="18" Background="DimGray" Foreground="LawnGreen" VerticalAlignment="Top" 
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="200" Text="Temp: NULL degrees"/>
-
-        <!-- Battery -->
-        <TextBlock x:Name="BatteryLevelBox" TextWrapping="Wrap" Margin="10,173,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
-                   FontSize="20" Background="LightGray" Foreground="Black" VerticalAlignment="Top" Text="Battery Level"
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="480" Height="30" />
-        <TextBlock x:Name="BatteryChargeBox" Margin="10,203,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
-                   FontSize="18" Background="Green" Foreground="White" VerticalAlignment="Top" Text=""
-                   HorizontalAlignment="Left" TextAlignment="Center" MinWidth="40" MaxWidth="480" Width="35"/>
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="195" Text="Temp: NULL degrees"/>
 
         <!-- CCTV Monitoring -->
         <TextBlock x:Name="CCTVHealth" TextWrapping="Wrap" Margin="360,116,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="20" Background="SaddleBrown" Foreground="OldLace" VerticalAlignment="Top" Text="CCTV: ON"
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="130" Height="30" />
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="155" Height="30" />
         <TextBlock x:Name="AlarmBox" Margin="360,146,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
                    FontSize="18" Background="OldLace" Foreground="SaddleBrown" VerticalAlignment="Top" Text="Alarm: OFF"
-                   HorizontalAlignment="Left" TextAlignment="Center" Width="130" Height="22"/>
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="155" Height="22"/>
 
-        <!-- E Stop -->
-        <ToggleButton FontSize="30" Foreground="White" x:Name="STOP" Background="Red"
-            Content="STOP" Margin="495,116,0,0" FontFamily="Century Gothic" FontStretch="ExtraExpanded"
-            VerticalAlignment="Top" Grid.ColumnSpan="2" Height="109" FontWeight="ExtraBold"
-            HorizontalAlignment="Left" Width="173"/>
+        <!-- Battery -->
+        <TextBlock x:Name="BatteryLevelBox" TextWrapping="Wrap" Margin="160,173,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="20" Background="LightGray" Foreground="Black" VerticalAlignment="Top" Text="Battery Level"
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="355" Height="30" />
+        <TextBlock x:Name="BatteryChargeBox" Margin="160,203,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="Green" Foreground="White" VerticalAlignment="Top" Text=""
+                   HorizontalAlignment="Left" TextAlignment="Center" MinWidth="40" MaxWidth="360" Width="355" Height="22"/>
 
-        <!-- Temp Jog Buttons -->
-        <ToggleButton FontSize="30" Foreground="Black" x:Name="Jog_M1B" Background="PaleGoldenrod"
-                      Content="M1B" Margin="27,243,0,0" FontFamily="Century Gothic"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="100"
-                      HorizontalAlignment="Left" Width="100"/>
-        <ToggleButton FontSize="30" Foreground="Black" x:Name="Jog_M1F" Background="Gold"
-                      Content="M1F" Margin="132,243,0,0" FontFamily="Century Gothic"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="100"
-                      HorizontalAlignment="Left" Width="100"/>
-        <ToggleButton FontSize="30" Foreground="Black" x:Name="Jog_M2F" Background="DarkGoldenrod"
-                      Content="M2F" Margin="342,243,0,0" FontFamily="Century Gothic"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="100"
-                      HorizontalAlignment="Left" Width="100"/>
-        <ToggleButton FontSize="30" Foreground="Black" x:Name="Jog_M2B" Background="Goldenrod"
-                      Content="M2B" Margin="237,243,0,0" FontFamily="Century Gothic"
-                      VerticalAlignment="Top" Grid.ColumnSpan="2" Height="100"
-                      HorizontalAlignment="Left" Width="100"/>
+        <!-- Flash -->
+        <ToggleButton x:Name="FlashButton" Margin="10,230,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic"
+                      FontSize="20" Foreground="#FFDEAD" Background="Gray" VerticalAlignment="Top" Content="Flash: OFF"
+                      HorizontalAlignment="Left" Height="30" Width="145" Checked="FlashButton_Checked" Unchecked="FlashButton_Checked"/>
+        <TextBlock x:Name="FlashBox" TextWrapping="Wrap" Margin="10,260,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic" 
+                   FontSize="18" Background="Black" Foreground="White" VerticalAlignment="Top" 
+                   HorizontalAlignment="Left" TextAlignment="Center" Width="145" Text="Flashes: NULL"/>
+        <ToggleButton x:Name="CameraButton" Margin="10,280,0,0" Grid.ColumnSpan="2" FontFamily="Century Gothic"
+                      FontSize="20" Foreground="PaleGoldenrod" Background="DarkGray" VerticalAlignment="Top" Content="Camera: OFF"
+                      HorizontalAlignment="Left" Height="30" Width="145" Checked="CameraButton_Checked" Unchecked="CameraButton_Checked"/>
+
+        <!-- Limit Graphic -->
 
     </Grid>
 </Page>

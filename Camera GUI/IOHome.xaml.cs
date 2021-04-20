@@ -35,6 +35,13 @@ namespace Camera_GUI
 		public bool level;
 		public bool pan;
 		public bool cool_state;
+		public bool e_stop;
+		public bool M1B;
+		public bool M1F;
+		public bool M2B;
+		public bool M2F;
+		public bool flash_state;
+		public bool camera_state;
 		public double angle_x;
 		public double angle_y;
 		public double pan_reading;
@@ -44,12 +51,8 @@ namespace Camera_GUI
 		public float y_set_box;
 		public float pan_set_box;
 		string flash_text;
+		string camera_text;
 		short flash_number;
-		public bool e_stop;
-		public bool M1B;
-		public bool M1F;
-		public bool M2B;
-		public bool M2F;
 
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		float old_data_sum;
@@ -86,19 +89,33 @@ namespace Camera_GUI
 		// When enter is pressed while a value is written in the "Set X" field, this sets the data in a variable to be sent later
 		private void XReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
 		{
+			float yvalue;
+			float.TryParse(YSetBox.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetField.Text, out xvalue);
 			if (e.Key == Key.Return)
 			{
-				XSetBox.Text = XSetField.Text;
-				XSetField.Text = "";
+				if (Math.Abs(2 * (xvalue - 1.8)) + Math.Abs(yvalue + 0.6) < 12)
+				{
+					XSetBox.Text = XSetField.Text;
+					XSetField.Text = "";
+				}
 			}
 		}
 		// When enter is pressed while a value is written in the "Set Y" field, this sets the data in a variable to be sent later
 		private void YReturnPressed(object sender, System.Windows.Input.KeyEventArgs e)
 		{
+			float yvalue;
+			float.TryParse(YSetField.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetBox.Text, out xvalue);
 			if (e.Key == Key.Return)
 			{
-				YSetBox.Text = YSetField.Text;
-				YSetField.Text = "";
+				if (Math.Abs(2 * (xvalue - 1.8)) + Math.Abs(yvalue + 0.6) < 12)
+                {
+                    YSetBox.Text = YSetField.Text;
+					YSetField.Text = "";
+				}
 			}
 		}
 		// When enter is pressed while a value is written in the "Set Pan" field, this sets the data in a variable to be sent later
@@ -148,12 +165,14 @@ namespace Camera_GUI
 				CameraTempBox.Text = temperature.ToString() + " degrees";
 				FlashBox.Text = "Flashes: " + flash_number;
 				BatteryChargeBox.Text = battery_level.ToString() + "%";
-				BatteryChargeBox.Width = Math.Round(battery_level*4.75, 0);
+				BatteryChargeBox.Width = Math.Round(battery_level / 27648 * (BatteryChargeBox.MaxWidth / 100), 0);
 				e_stop = (bool)STOP.IsChecked;
 				M1B = Jog_M1B.IsChecked.Value;
 				M1F = Jog_M1F.IsChecked.Value;
 				M2B = Jog_M2B.IsChecked.Value;
 				M2F = Jog_M2F.IsChecked.Value;
+				flash_state = FlashButton.IsChecked.Value;
+				camera_state = CameraButton.IsChecked.Value;
 
 				// In order to get the target angles, the strings in the x, y and pan fields are parsed to floats
 				float.TryParse(XSetBox.Text, out x_set_box);
@@ -248,7 +267,7 @@ namespace Camera_GUI
 					// The following lines are taking data from the database object, and copying them to global variables
 					angle_x = Math.Round(((double)chiefdb.x_out.Value / 27648 * 90) - 45, 2);
 					angle_y = Math.Round(((double)chiefdb.y_out.Value / 27648 * 90) - 45, 2);
-					pan_reading = Math.Round(chiefdb.pan_out.Value,1);
+					pan_reading = Math.Round((double)chiefdb.pan_out.Value,1);
 					flash_number = chiefdb.flash_count.Value;
 					temperature = Math.Round(chiefdb.temperature.Value, 1);
 					cool_state = chiefdb.cool_state.Value;
@@ -260,20 +279,23 @@ namespace Camera_GUI
 					// The next lines copy data into  the database 
 					chiefdb.level.Value = level;
 					chiefdb.pan.Value = pan;
-					chiefdb.x_in.Value = (x_set_box + 45) / 90 * 27648;
 					chiefdb.y_in.Value = (y_set_box + 45) / 90 * 27648;
+					chiefdb.x_in.Value = (x_set_box + 45) / 90 * 27648;
 					chiefdb.pan_in.Value = (pan_set_box + 45) / 90 * 27648;
 					chiefdb.e_stop.Value = e_stop;
 					chiefdb.M1B.Value = M1B;
 					chiefdb.M1F.Value = M1F;
 					chiefdb.M2B.Value = M2B;
 					chiefdb.M2F.Value = M2F;
+					chiefdb.flash_state.Value = flash_state;
+					chiefdb.camera_state.Value = camera_state;
 
 					// delta is a concept that minimises bandwidth across the connection from the PC to the PLC
 					// This first line adds up data to an arbitrary number
 					data_sum = x_set_box + y_set_box + pan_set_box 
 						+ Convert.ToInt32(level) + Convert.ToInt32(pan) + Convert.ToInt32(e_stop)
-						+ Convert.ToInt32(M1B) + Convert.ToInt32(M1F) + Convert.ToInt32(M2B) + Convert.ToInt32(M2F);
+						+ Convert.ToInt32(M1B) + Convert.ToInt32(M1F) + Convert.ToInt32(M2B) + Convert.ToInt32(M2F)
+						+ Convert.ToInt32(flash_state) + Convert.ToInt32(camera_state);
 					// If data_sum has changed since the last measurement, then the given command/s are executed
 					if(data_sum != old_data_sum)
                     {
@@ -292,39 +314,91 @@ namespace Camera_GUI
 
         private void X_Down_Click(object sender, RoutedEventArgs e)
         {
-			float.TryParse(XSetBox.Text, out x_set_box);
-			x_set_box -= (float)0.1;
-			XSetBox.Text = x_set_box.ToString("0.00");
+			float yvalue;
+			float.TryParse(YSetBox.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetBox.Text, out xvalue);
+			if (Math.Abs(2 * (xvalue - 0.1 - 1.8)) + Math.Abs(yvalue + 0.6) < 12)
+			{
+				float.TryParse(XSetBox.Text, out x_set_box);
+				x_set_box -= (float)0.1;
+				XSetBox.Text = x_set_box.ToString("0.00");
+			}
 		}
         private void X_Up_Click(object sender, RoutedEventArgs e)
         {
-			float.TryParse(XSetBox.Text, out x_set_box);
-			x_set_box += (float)0.1;
-			XSetBox.Text = x_set_box.ToString("0.00");
+			float yvalue;
+			float.TryParse(YSetBox.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetBox.Text, out xvalue);
+			if (Math.Abs(2 * (xvalue + 0.1 - 1.8)) + Math.Abs(yvalue + 0.6) < 12)
+			{
+				float.TryParse(XSetBox.Text, out x_set_box);
+				x_set_box += (float)0.1;
+				XSetBox.Text = x_set_box.ToString("0.00");
+			}
+
 		}
         private void Y_Down_Click(object sender, RoutedEventArgs e)
         {
-			float.TryParse(YSetBox.Text, out y_set_box);
-			y_set_box -= (float)0.1;
-			YSetBox.Text = y_set_box.ToString("0.00");
+			float yvalue;
+			float.TryParse(YSetBox.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetBox.Text, out xvalue);
+			if (Math.Abs(2 * (xvalue - 1.8)) + Math.Abs(yvalue - 0.1 + 0.6) < 12)
+			{
+				float.TryParse(YSetBox.Text, out y_set_box);
+				y_set_box -= (float)0.1;
+				YSetBox.Text = y_set_box.ToString("0.00");
+			}
 		}
         private void Y_Up_Click(object sender, RoutedEventArgs e)
         {
-			float.TryParse(YSetBox.Text, out y_set_box);
-			y_set_box += (float)0.1;
-			YSetBox.Text = y_set_box.ToString("0.00");
+			float yvalue;
+			float.TryParse(YSetBox.Text, out yvalue);
+			float xvalue;
+			float.TryParse(XSetBox.Text, out xvalue);
+			if (Math.Abs(2 * (xvalue - 1.8)) + Math.Abs(yvalue + 0.1 + 0.6) < 12)
+			{
+				float.TryParse(YSetBox.Text, out y_set_box);
+				y_set_box += (float)0.1;
+				YSetBox.Text = y_set_box.ToString("0.00");
+			}
 		}
 		private void Pan_Down_Click(object sender, RoutedEventArgs e)
 		{
-			float.TryParse(PanSetBox.Text, out pan_set_box);
-			pan_set_box -= (float)0.1;
-			PanSetBox.Text = pan_set_box.ToString("0.00");
+			float panvalue;
+			float.TryParse(PanSetBox.Text, out panvalue);
+			if (Math.Abs(panvalue - 0.1) < 12)
+			{
+				float.TryParse(PanSetBox.Text, out pan_set_box);
+				pan_set_box -= (float)0.1;
+				PanSetBox.Text = pan_set_box.ToString("0.00");
+			}
 		}
 		private void Pan_Up_Click(object sender, RoutedEventArgs e)
         {
-			float.TryParse(PanSetBox.Text, out pan_set_box);
-			pan_set_box += (float)0.1;
-			PanSetBox.Text = pan_set_box.ToString("0.00");
+			float panvalue;
+			float.TryParse(PanSetBox.Text, out panvalue);
+			if (Math.Abs(panvalue + 0.1) < 12)
+			{
+				float.TryParse(PanSetBox.Text, out pan_set_box);
+				pan_set_box += (float)0.1;
+				PanSetBox.Text = pan_set_box.ToString("0.00");
+			}
+		}
+
+        private void CameraButton_Checked(object sender, RoutedEventArgs e)
+        {
+			if (CameraButton.IsChecked == true)
+			{
+				camera_text = "Camera: ON";
+			}
+			else
+			{
+				camera_text = "Camera: OFF";
+			}
+			CameraButton.Content = camera_text;
 		}
     }
 }

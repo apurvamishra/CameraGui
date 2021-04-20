@@ -27,7 +27,7 @@ namespace Camera_GUI
 
         // An output, setting the target angle for the camera to pan to
         [Order(5)]
-        public JPLCProperty<float> pan_out { get; set; }
+        public JPLCProperty<short> pan_out { get; set; }
 
         // An input, showing the current angle the camera is currently panned to
         [Order(6)]
@@ -68,6 +68,10 @@ namespace Camera_GUI
         public JPLCProperty<bool> M2B { get; set; }
         [Order(17)]
         public JPLCProperty<bool> M2F { get; set; }
+        [Order(18)]
+        public JPLCProperty<bool> flash_state { get; set; }
+        [Order(18)]
+        public JPLCProperty<bool> camera_state { get; set; }
 
         public ChiefDatabase(int address = 0) : base(address) {  }
     }
