@@ -61,17 +61,39 @@ namespace Camera_GUI
         [Order(13)]
         public JPLCProperty<bool> e_stop { get; set; }
         [Order(14)]
-        public JPLCProperty<bool> M1B { get; set; }
+
+        // A button which alters a jog counter, slightly nudging the pitch angle
+        public JPLCProperty<short> jog_pitch_in { get; set; }
         [Order(15)]
-        public JPLCProperty<bool> M1F { get; set; }
+
+        // A button which alters a jog counter, slightly nudging the yaw angle
+        public JPLCProperty<short> jog_yaw_in { get; set; }
         [Order(16)]
-        public JPLCProperty<bool> M2B { get; set; }
+
+        // A button which alters a jog counter, slightly nudging the yaw angle
+        public JPLCProperty<short> jog_pitch_out { get; set; }
         [Order(17)]
-        public JPLCProperty<bool> M2F { get; set; }
+
+        // A button which alters a jog counter, slightly nudging the yaw angle
+        public JPLCProperty<short> jog_yaw_out { get; set; }
         [Order(18)]
+
         public JPLCProperty<bool> flash_state { get; set; }
-        [Order(18)]
+        [Order(19)]
+
         public JPLCProperty<bool> camera_state { get; set; }
+        [Order(20)]
+
+        public JPLCProperty<short> jog_pan_in { get; set; }
+        [Order(21)]
+
+        public JPLCProperty<short> jog_pan_out { get; set; }
+        [Order(22)]
+
+        public JPLCProperty<bool> level_status { get; set; }
+        [Order(23)]
+
+        public JPLCProperty<bool> pan_status { get; set; }
 
         public ChiefDatabase(int address = 0) : base(address) {  }
     }
